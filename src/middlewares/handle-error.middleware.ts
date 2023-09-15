@@ -1,21 +1,24 @@
-import { NextFunction, Request, Response } from 'express';
+import HttpException from 'exceptions/HttpException';
+import type { NextFunction, Request, Response } from 'express';
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 
 const errorHandler = (
-  error: any,
+  error: Error | HttpException,
   _: Request,
   res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const statusCode = error.status || StatusCodes.INTERNAL_SERVER_ERROR;
-    const message =
-      error.message || getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR);
+  __: NextFunction,
+): void => {
+  let status, message;
 
-    res.status(statusCode).json({ statusCode, message });
-  } catch (err) {
-    next(err);
+  if (error instanceof HttpException) {
+    status = error.status;
+    message = error.message;
+  } else {
+    status = StatusCodes.INTERNAL_SERVER_ERROR;
+    message = getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR);
   }
+
+  res.status(status).json({ status, message });
 };
 
 export default errorHandler;

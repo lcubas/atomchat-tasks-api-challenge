@@ -6,13 +6,10 @@
   "extends": [
     "standard-with-typescript",
     "eslint:recommended",
-    "plugin:promise/recommended",
-    "plugin:n/recommended",
-    "plugin:security/recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:promise/recommended",
+    "plugin:security/recommended",
     "prettier"
-  ],
-  "overrides": [
   ],
   "parserOptions": {
     "project": "tsconfig.json"
@@ -20,6 +17,7 @@
   "rules": {
     "max-len": ["error", {
       "code": 128
-    }]
+    }],
+    "@typescript-eslint/strict-boolean-expressions": "warn"
   }
 }

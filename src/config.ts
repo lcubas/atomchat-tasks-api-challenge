@@ -1,16 +1,25 @@
+/* eslint-disable security/detect-object-injection */
 import path from 'path';
 import dotenv from 'dotenv';
-import getEnv from './utils/getEnv';
+import getEnvValue from './utils/getEnvValue';
 
-enum EnviromentFile {
-  development = '.env',
-  production = '.env.prod',
-}
+const envFileMap: Record<string, string> = {
+  'development': '.env',
+  'production': '.env.prod',
+};
 
-const envPath = EnviromentFile[process.env.NODE_ENV || 'development'];
+const getEnvFilePath = (): string => {
+  const env = getEnvValue('NODE_ENV', 'development');
 
-dotenv.config({ path: path.resolve(__dirname, envPath) });
+  if (env in Object.keys(envFileMap)) {
+    return envFileMap[env];
+  }
+
+  return envFileMap.development;
+};
+
+dotenv.config({ path: path.resolve(__dirname, getEnvFilePath()) });
 
 export default {
-  PORT: Number(getEnv('PORT', '3000')),
+  PORT: Number(getEnvValue('PORT', '3000')),
 };
