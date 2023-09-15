@@ -1,6 +1,7 @@
-import express, { Application } from 'express';
+import express, { type Application } from 'express';
 import helmet from 'helmet';
 import compression from 'compression';
+import { onRequest } from 'firebase-functions/v2/https';
 
 import routes from './routes';
 import handleError from './middlewares/handle-error.middleware';
@@ -15,7 +16,7 @@ app.use(
   express.urlencoded({ extended: true }),
 );
 
-app.use('/api', routes);
+app.use(routes);
 
 app.all('*', () => {
   throw new NotFoundException();
@@ -23,4 +24,4 @@ app.all('*', () => {
 
 app.use(handleError);
 
-export default app;
+export const api = onRequest(app);
