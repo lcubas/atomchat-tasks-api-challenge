@@ -1,6 +1,18 @@
-import HttpException from 'exceptions/HttpException';
 import type { NextFunction, Request, Response } from 'express';
+import { type ValidationError } from 'express-validator';
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
+import HttpException from '../exceptions/HttpException';
+import UnprocessableEntity from '../exceptions/UnprocessableEntity';
+import enviroment from 'enviroment';
+
+const { ENV } = enviroment;
+
+interface IResponseError {
+  code: number;
+  message: string;
+  stack?: string;
+  errors?: ValidationError[];
+}
 
 export const errorHandler = (
   error: Error | HttpException,
@@ -8,15 +20,30 @@ export const errorHandler = (
   res: Response,
   __: NextFunction,
 ): void => {
-  let status, message;
+  let response: IResponseError;
 
   if (error instanceof HttpException) {
-    status = error.status;
-    message = error.message;
+    response = {
+      code: error.status,
+      message: error.message,
+    };
+
+    if (
+      error instanceof UnprocessableEntity &&
+      response.code === StatusCodes.UNPROCESSABLE_ENTITY
+    ) {
+      response.errors = error.errors;
+    }
   } else {
-    status = StatusCodes.INTERNAL_SERVER_ERROR;
-    message = getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR);
+    response = {
+      code: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR),
+    };
   }
 
-  res.status(status).json({ status, message });
+  if (ENV === 'development') {
+    response.stack = error.stack;
+  }
+
+  res.status(response.code).json(response);
 };

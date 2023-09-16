@@ -3,8 +3,8 @@ import helmet from 'helmet';
 import compression from 'compression';
 import { onRequest } from 'firebase-functions/v2/https';
 
-import routes from './routes';
-import NotFoundException from './exceptions/NotFoundException';
+import routes from 'routes';
+import NotFoundException from 'exceptions/NotFoundException';
 import { errorHandler } from 'middlewares/error-handler.middleware';
 
 const app: Application = express();

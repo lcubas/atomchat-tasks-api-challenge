@@ -1,28 +1,41 @@
 import type { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { firestoreDb } from '../services/firestore';
-
-interface TaskItem {
-  title: string;
-  description: string;
-  is_completed: boolean;
-}
+import taskService from '../services/task.service';
 
 const index = async (_: Request, res: Response): Promise<void> => {
-  const tasksSnapshot = await firestoreDb.collection('tasks').get();
+  const tasks = await taskService.getAll();
 
-  const tasks: TaskItem[] = [];
-  tasksSnapshot.forEach((doc) => {
-    const { title, description, isCompleted } = doc.data();
-
-    tasks.push({
-      title,
-      description,
-      is_completed: isCompleted,
-    });
+  res.status(StatusCodes.OK).send({
+    data: [...tasks],
   });
-
-  res.status(StatusCodes.OK).send({ tasks });
 };
 
-export default index;
+const create = async (req: Request, res: Response): Promise<void> => {
+  const { title, description } = req.body;
+  const task = await taskService.create({ title, description });
+
+  res.status(StatusCodes.CREATED).send({
+    data: task,
+  });
+};
+
+const update = async (req: Request, res: Response): Promise<void> => {
+  const taskId = req.params.id;
+  const { title, description, isCompleted } = req.body;
+
+  const task = await taskService.update(taskId, { title, description, isCompleted });
+
+  res.status(StatusCodes.OK).send({
+    data: task,
+  });
+};
+
+const remove = async (req: Request, res: Response): Promise<void> => {
+  const taskId = req.params.id;
+
+  await taskService.remove(taskId);
+
+  res.status(StatusCodes.NO_CONTENT).send(null);
+};
+
+export default { index, create, update, remove };
