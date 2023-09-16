@@ -6,8 +6,17 @@ const index = async (_: Request, res: Response): Promise<void> => {
   const tasks = await taskService.getAll();
 
   res.status(StatusCodes.OK).send({
-    data: [...tasks]
+    data: [...tasks],
   });
 };
 
-export default index;
+const create = async (req: Request, res: Response): Promise<void> => {
+  const { title, description } = req.body;
+  const task = await taskService.create({ title, description });
+
+  res.status(StatusCodes.CREATED).send({
+    data: task,
+  });
+};
+
+export default { index, create };

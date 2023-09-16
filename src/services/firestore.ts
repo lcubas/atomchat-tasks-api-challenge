@@ -1,6 +1,6 @@
 import path from "path";
 import * as admin from "firebase-admin";
-import enviroment from '../enviroment';
+import enviroment from 'enviroment';
 
 const  { ENV, FIREBASE_SERVICE_ACCOUNT_KEY_FILE } = enviroment;
 

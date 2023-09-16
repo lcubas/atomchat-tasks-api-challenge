@@ -1,13 +1,19 @@
 import { firestoreDb } from '../services/firestore';
 
-export interface TaskItem {
+export interface ITaskItem {
+  id: string;
   title: string;
   description: string;
   is_completed: boolean;
 }
 
-const getAll = async (): Promise<TaskItem[]> => {
-  const tasks: TaskItem[] = [];
+export interface ICreateTaskDTO {
+  title: string;
+  description: string;
+}
+
+const getAll = async (): Promise<ITaskItem[]> => {
+  const tasks: ITaskItem[] = [];
   const tasksSnapshot = await firestoreDb.collection('tasks').get();
 
   tasksSnapshot.forEach((doc) => {
@@ -15,6 +21,7 @@ const getAll = async (): Promise<TaskItem[]> => {
 
     tasks.push({
       title,
+      id: doc.id,
       description,
       is_completed: isCompleted,
     });
@@ -23,4 +30,19 @@ const getAll = async (): Promise<TaskItem[]> => {
   return tasks;
 };
 
-export default { getAll };
+const create = async (data: ICreateTaskDTO): Promise<ITaskItem> => {
+  const newTaskData = {
+    ...data,
+    isCompleted: false,
+  };
+
+  const doc = await firestoreDb.collection('tasks').add(newTaskData);
+
+  return {
+    ...data,
+    id: doc.id,
+    is_completed: false,
+  };
+};
+
+export default { getAll, create };
