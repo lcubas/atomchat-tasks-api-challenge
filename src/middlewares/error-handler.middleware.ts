@@ -2,7 +2,7 @@ import HttpException from 'exceptions/HttpException';
 import type { NextFunction, Request, Response } from 'express';
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 
-const errorHandler = (
+export const errorHandler = (
   error: Error | HttpException,
   _: Request,
   res: Response,
@@ -20,5 +20,3 @@ const errorHandler = (
 
   res.status(status).json({ status, message });
 };
-
-export default errorHandler;

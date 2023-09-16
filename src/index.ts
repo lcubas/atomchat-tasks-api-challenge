@@ -4,8 +4,8 @@ import compression from 'compression';
 import { onRequest } from 'firebase-functions/v2/https';
 
 import routes from './routes';
-import handleError from './middlewares/handle-error.middleware';
 import NotFoundException from './exceptions/NotFoundException';
+import { errorHandler } from 'middlewares/error-handler.middleware';
 
 const app: Application = express();
 
@@ -22,6 +22,6 @@ app.all('*', () => {
   throw new NotFoundException();
 });
 
-app.use(handleError);
+app.use(errorHandler);
 
 export const api = onRequest(app);

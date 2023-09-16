@@ -3,10 +3,10 @@
 Todo list api. The application allows the user to add, edit and delete tasks, as well as mark them as completed
 ## Getting started
 
-First, you need copy `.env.local` file into `.env.dev` file.
+First, you need copy `.env.example` file content into `.env.dev` file.
 
 ```sh
-cp .env.local .env
+cp .env.example .env
 ```
 
 ## Installation
@@ -20,7 +20,7 @@ npm install
 Run server in dev mode:
 
 ```sh
-npm run server:dev
+npm run serve
 ```
 
 If you see the following response in the browser:
