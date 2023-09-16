@@ -3,10 +3,14 @@ import { type ValidationError } from 'express-validator';
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 import HttpException from '../exceptions/HttpException';
 import UnprocessableEntity from '../exceptions/UnprocessableEntity';
+import enviroment from 'enviroment';
+
+const { ENV } = enviroment;
 
 interface IResponseError {
   code: number;
   message: string;
+  stack?: string;
   errors?: ValidationError[];
 }
 
@@ -35,6 +39,10 @@ export const errorHandler = (
       code: StatusCodes.INTERNAL_SERVER_ERROR,
       message: getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR),
     };
+  }
+
+  if (ENV === 'development') {
+    response.stack = error.stack;
   }
 
   res.status(response.code).json(response);

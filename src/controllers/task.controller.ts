@@ -19,4 +19,16 @@ const create = async (req: Request, res: Response): Promise<void> => {
   });
 };
 
-export default { index, create };
+const update = async (req: Request, res: Response): Promise<void> => {
+  const taskId = req.params.id;
+  const { title, description, isCompleted } = req.body;
+
+  const task = await taskService.update(taskId, { title, description, isCompleted });
+
+  res.status(StatusCodes.OK).send({
+    data: task,
+  });
+};
+
+
+export default { index, create, update };

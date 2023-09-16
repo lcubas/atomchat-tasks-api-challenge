@@ -1,15 +1,23 @@
+import NotFoundException from 'exceptions/NotFoundException';
 import { firestoreDb } from '../services/firestore';
+import removeUndefinedValues from 'utils/removeUndefinedVales';
 
 export interface ITaskItem {
   id: string;
   title: string;
   description: string;
-  is_completed: boolean;
+  isCompleted: boolean;
 }
 
 export interface ICreateTaskDTO {
   title: string;
   description: string;
+}
+
+export interface IUpdateTaskDTO {
+  title: string;
+  description: string;
+  isCompleted?: boolean;
 }
 
 const getAll = async (): Promise<ITaskItem[]> => {
@@ -23,7 +31,7 @@ const getAll = async (): Promise<ITaskItem[]> => {
       title,
       id: doc.id,
       description,
-      is_completed: isCompleted,
+      isCompleted,
     });
   });
 
@@ -36,13 +44,36 @@ const create = async (data: ICreateTaskDTO): Promise<ITaskItem> => {
     isCompleted: false,
   };
 
-  const doc = await firestoreDb.collection('tasks').add(newTaskData);
+  const taskRef = await firestoreDb.collection('tasks').add(newTaskData);
 
   return {
     ...data,
-    id: doc.id,
-    is_completed: false,
+    id: taskRef.id,
+    isCompleted: false,
   };
 };
 
-export default { getAll, create };
+const update = async (taskId: string, data: IUpdateTaskDTO): Promise<ITaskItem> => {
+  const taskRef = firestoreDb.collection('tasks').doc(taskId);
+  const taskSnapshot = await taskRef.get();
+
+  if (!taskSnapshot.exists) {
+    throw new NotFoundException('Task not found');
+  }
+
+  const updateTaskData = removeUndefinedValues(data);
+
+  await taskRef.update(updateTaskData);
+
+  const updatedTasksnapshot = await taskRef.get();
+  const { title, description, isCompleted } = updatedTasksnapshot.data() as ITaskItem;
+
+  return {
+    title,
+    description,
+    isCompleted,
+    id: taskId,
+  };
+};
+
+export default { getAll, create, update };
