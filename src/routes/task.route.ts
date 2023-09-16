@@ -10,5 +10,6 @@ const router: Router = Router();
 router.get('/', asyncMiddleware(taskController.index));
 router.post('/', asyncMiddleware(requestValidator(createTaskValidation())), asyncMiddleware(taskController.create));
 router.put('/:id', asyncMiddleware(requestValidator(updateTaskValidation())), asyncMiddleware(taskController.update));
+router.delete('/:id', asyncMiddleware(taskController.remove));
 
 export default router;

@@ -76,4 +76,15 @@ const update = async (taskId: string, data: IUpdateTaskDTO): Promise<ITaskItem> 
   };
 };
 
-export default { getAll, create, update };
+const remove = async  (taskId: string): Promise<void> => {
+  const taskRef = firestoreDb.collection('tasks').doc(taskId);
+  const taskSnapshot = await taskRef.get();
+
+  if (!taskSnapshot.exists) {
+    throw new NotFoundException('Task not found');
+  }
+
+  await taskRef.delete();
+};
+
+export default { getAll, create, update, remove };

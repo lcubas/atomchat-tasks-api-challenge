@@ -30,5 +30,12 @@ const update = async (req: Request, res: Response): Promise<void> => {
   });
 };
 
+const remove = async (req: Request, res: Response): Promise<void> => {
+  const taskId = req.params.id;
 
-export default { index, create, update };
+  await taskService.remove(taskId);
+
+  res.status(StatusCodes.NO_CONTENT).send(null);
+};
+
+export default { index, create, update, remove };
