@@ -1,0 +1,25 @@
+name: Cloud Functions Deploy
+'on': pull_request
+
+jobs:
+  job_id:
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - uses: 'actions/checkout@v3'
+
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        service_account: 'firebase-adminsdk-d7vox@atomchat-tasks-api-challenge.iam.gserviceaccount.com'
+
+    - id: 'deploy'
+      uses: 'google-github-actions/deploy-cloud-functions@v1'
+      with:
+        name: 'api'
+        runtime: 'nodejs18'
+        env_vars: 'ENV=production'
+        labels: 'enviroment=production,type=api'
