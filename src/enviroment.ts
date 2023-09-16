@@ -21,5 +21,6 @@ const getEnvFilePath = (): string => {
 dotenv.config({ path: path.resolve(__dirname, getEnvFilePath()) });
 
 export default {
-  PORT: Number(getEnvValue('PORT', '3000')),
+  ENV: String(getEnvValue('NODE_ENV', 'development')),
+  FIREBASE_SERVICE_ACCOUNT_KEY_FILE: String(getEnvValue('APP_TASK_FIREBASE_SERVICE_ACCOUNT_KEY_FILE')),
 };

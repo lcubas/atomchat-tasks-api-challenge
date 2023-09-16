@@ -7,7 +7,6 @@
 node_modules/
 npm-debug.log
 yarn-error.log
-.env
 .npmrc
 
 # OS generated files #
@@ -41,4 +40,10 @@ dist/
 src/**/*.js.map
 coverage/
 
+# env files
+.env
 .env.dev
+.env.prod
+
+# firebase secrets config file
+firebase/*
