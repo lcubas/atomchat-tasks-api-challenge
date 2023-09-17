@@ -2,7 +2,7 @@ name: Cloud Functions Deploy
 'on': pull_request
 
 jobs:
-  job_id:
+  deploy:
     runs-on: 'ubuntu-latest'
     permissions:
       contents: 'read'
@@ -21,5 +21,5 @@ jobs:
       with:
         name: 'api'
         runtime: 'nodejs18'
-        env_vars: 'ENV=production'
+        env_vars: 'ENV=production,TASK_FIREBASE_SERVICE_ACCOUNT_KEY_FILE="${{ secrets.TASK_FIREBASE_SERVICE_ACCOUNT_KEY_FILE }}"'
         labels: 'enviroment=production,type=api'
