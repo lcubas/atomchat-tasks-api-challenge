@@ -27,5 +27,7 @@ jobs:
       with:
         name: 'api'
         runtime: 'nodejs18'
+        source_dir: '.'
+        project_id: ${{ secrets.PROJECT_ID }}
         labels: 'enviroment=production,type=api'
         env_vars: 'ENV=production,TASK_FIREBASE_SERVICE_ACCOUNT_KEY_FILE="${{ secrets.TASK_FIREBASE_SERVICE_ACCOUNT_KEY_FILE }}"'
