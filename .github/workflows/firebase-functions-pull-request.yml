@@ -1,5 +1,10 @@
-name: Cloud Functions Deploy
-'on': pull_request
+name: Tasks API Deploy into Cloud Functions Firebase
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   deploy:
@@ -14,8 +19,8 @@ jobs:
     - id: 'auth'
       uses: 'google-github-actions/auth@v1'
       with:
-        service_account: ${{ secrets.SERVICE_ACCOUNT }}
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER_LOCATION }}
+        service_account: ${{ secrets.SERVICE_ACCOUNT }}
 
     - id: 'deploy'
       uses: 'google-github-actions/deploy-cloud-functions@v1'
