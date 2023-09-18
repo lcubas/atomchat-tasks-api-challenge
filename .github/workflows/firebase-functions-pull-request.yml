@@ -9,17 +9,19 @@ jobs:
       id-token: 'write'
 
     steps:
-    - uses: 'actions/checkout@v3'
+    # - uses: 'actions/checkout@v3'
 
-    - id: 'auth'
-      uses: 'google-github-actions/auth@v1'
-      with:
-        credentials_json: ${{ secrets.GCP_CREDENTIALS_JSON }}
+    # # - id: 'auth'
+    # #   uses: 'google-github-actions/auth@v1'
+    # #   with:
+    # #     credentials_json: ${{ secrets.GCP_CREDENTIALS_JSON }}
 
     - id: 'deploy'
       uses: 'google-github-actions/deploy-cloud-functions@v1'
       with:
         name: 'api'
         runtime: 'nodejs18'
-        env_vars: 'ENV=production,TASK_FIREBASE_SERVICE_ACCOUNT_KEY_FILE="${{ secrets.TASK_FIREBASE_SERVICE_ACCOUNT_KEY_FILE }}"'
+        project: ${{ secrets.GCP_PROJECT }}
+        credentials: ${{ secrets.GCP_CREDENTIALS_JSON }}
         labels: 'enviroment=production,type=api'
+        env_vars: 'ENV=production,TASK_FIREBASE_SERVICE_ACCOUNT_KEY_FILE="${{ secrets.TASK_FIREBASE_SERVICE_ACCOUNT_KEY_FILE }}"'
