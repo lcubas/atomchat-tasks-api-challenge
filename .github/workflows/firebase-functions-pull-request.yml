@@ -14,7 +14,8 @@ jobs:
     - id: 'auth'
       uses: 'google-github-actions/auth@v1'
       with:
-        credentials_json: ${{ secrets.GCP_CREDENTIALS_JSON }}
+        service_account: ${{ secrets.SERVICE_ACCOUNT }}
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER_LOCATION }}
 
     - id: 'deploy'
       uses: 'google-github-actions/deploy-cloud-functions@v1'
